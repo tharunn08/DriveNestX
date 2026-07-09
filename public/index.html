@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DriveNest – Genuine Bike & Car Spare Parts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --brand: #d63384;
+            --brand-dark: #a4266a;
+            --navy: #1b2340;
+            --navy-light: #2b3660;
+        }
+        body { padding-top: 70px; background-color: #f7f8fb; color: #222; }
+        a { text-decoration: none; }
+        .navbar-brand { font-weight: 800; letter-spacing: 0.3px; color: var(--navy) !important; }
+        .navbar-brand i { color: var(--brand); }
+        .nav-link { font-weight: 500; }
+
+        /* Hero */
+        .hero { background: linear-gradient(120deg, var(--navy) 0%, var(--navy-light) 100%); color: #fff; border-radius: 0 0 24px 24px; padding: 56px 0 64px; margin-bottom: 8px; }
+        .hero h1 { font-weight: 800; font-size: 2.2rem; }
+        .hero p.lead { color: #cfd4e6; }
+        .hero-stat { text-align: center; }
+        .hero-stat .num { font-size: 1.6rem; font-weight: 800; color: #fff; }
+        .hero-stat .label { font-size: 0.8rem; color: #b8bedb; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Vehicle type selector */
+        .vtype-tabs { display: inline-flex; background: #fff; border-radius: 50px; padding: 4px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+        .vtype-tabs button { border: none; background: transparent; padding: 8px 22px; border-radius: 50px; font-weight: 600; color: #555; transition: all .15s; }
+        .vtype-tabs button.active { background: var(--brand); color: #fff; }
+
+        /* Cards */
+        .section-title { font-weight: 800; color: var(--navy); }
+        .section-sub { color: #6c757d; }
+        .category-card { cursor: pointer; transition: transform 0.2s, box-shadow .2s; border: 1px solid #eee; overflow: hidden; }
+        .category-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.1); }
+        .category-thumb { height: 110px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f1f3fb, #e6e9f6); }
+        .category-thumb i { font-size: 2.4rem; color: var(--navy-light); }
+        .vtype-badge { position: absolute; top: 8px; left: 8px; font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+        .vtype-badge.bike { background: #e7f6ec; color: #1e7e42; }
+        .vtype-badge.car { background: #e8f0fe; color: #1a56b0; }
+
+        .product-card { transition: transform 0.2s, box-shadow .2s; margin-bottom: 20px; border: 1px solid #eee; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 22px rgba(0,0,0,0.1); }
+        .sale-badge { position: absolute; top: 10px; right: 10px; background: #dc3545; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; z-index: 2; }
+        .accessory-badge { position: absolute; top: 10px; left: 10px; background: #6f42c1; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; z-index: 2; text-transform: uppercase; letter-spacing: 0.3px; }
+        .cart-badge { background: var(--brand); color: white; border-radius: 50%; padding: 2px 8px; font-size: 0.7rem; }
+        .product-image-wrap { height: 190px; display: flex; align-items: center; justify-content: center; background: #fbfbfd; border-bottom: 1px solid #f0f0f0; }
+        .product-image { max-height: 100%; max-width: 100%; object-fit: contain; }
+        .fitment-line { font-size: 0.78rem; color: #6c757d; }
+        .fitment-line i { color: var(--brand); }
+        .price { font-weight: 800; color: var(--brand); }
+        .compare-price { text-decoration: line-through; color: #6c757d; font-size: 0.85rem; margin-left: 8px; }
+        #cartCount { font-size: 0.8rem; }
+        .spinner-wrap { display: flex; justify-content: center; padding: 60px 0; }
+
+        /* Services */
+        .service-card { border: none; border-radius: 16px; background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,0.06); padding: 24px; height: 100%; }
+        .service-card i { font-size: 1.8rem; color: var(--brand); }
+        .service-card h6 { font-weight: 700; margin-top: 10px; }
+        .service-card p { font-size: 0.88rem; color: #6c757d; margin-bottom: 0; }
+
+        /* Footer */
+        footer.site-footer { background: var(--navy); color: #cfd4e6; margin-top: 60px; padding: 44px 0 20px; }
+        footer.site-footer h6 { color: #fff; font-weight: 700; margin-bottom: 14px; }
+        footer.site-footer a { color: #cfd4e6; }
+        footer.site-footer a:hover { color: #fff; }
+        footer.site-footer .bottom-bar { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 28px; padding-top: 16px; font-size: 0.85rem; color: #9399bd; }
+
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+    </style>
+</head>
+<body>
+
+<div class="toast-container"></div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#" id="homeLink"><i class="bi bi-car-front-fill"></i> DriveNest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="categoryNav"></ul>
+            <form class="d-flex me-2" id="searchForm">
+                <input class="form-control me-1" type="search" placeholder="Search spare parts..." id="searchInput">
+                <button class="btn btn-outline-dark" type="submit"><i class="bi bi-search"></i></button>
+            </form>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="#" id="cartLink"><i class="bi bi-cart"></i> Cart <span id="cartCount" class="badge bg-secondary">0</span></a></li>
+                <li class="nav-item" id="authButtons">
+                    <a class="nav-link d-inline" href="#" id="loginLink">Login</a>
+                    <a class="nav-link d-inline" href="#" id="registerLink">Register</a>
+                </li>
+                <li class="nav-item dropdown" id="userDropdown" style="display:none;">
+                    <a class="nav-link dropdown-toggle" href="#" id="userName" role="button" data-bs-toggle="dropdown"></a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" id="myOrdersLink">My Orders</a></li>
+                        <li><a class="dropdown-item" href="#" id="adminDashboardLink" style="display:none;">Admin Dashboard</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" id="logoutLink">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container" id="mainContent"></div>
+
+<div class="modal fade" id="productModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="productModalBody"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ============================================================
+    //  DRIVENEST FRONTEND – Single Page Application
+    // ============================================================
+
+    const API_BASE = '/api'; // same-origin, works regardless of host/port
+    let currentUser = null;
+    let currentCart = { items: [], total: 0 };
+    let vehicleFilter = 'all'; // 'all' | 'bike' | 'car'
+    const productModalEl = document.getElementById('productModal');
+    const modal = new bootstrap.Modal(productModalEl);
+
+    // ---------- Services shown on the homepage & used to fill in "why DriveNest" info ----------
+    const SERVICES = [
+        { icon: 'bi-patch-check-fill', title: 'Genuine & OE-Spec Parts', text: 'Every part is sourced from genuine OEM suppliers or trusted aftermarket brands, never grey-market stock.' },
+        { icon: 'bi-truck', title: 'Doorstep Delivery', text: 'Pan-India shipping with tracked delivery, typically 2-5 business days depending on your location.' },
+        { icon: 'bi-tools', title: 'Fitment Guidance', text: 'Every listing shows exactly which models a part fits, so you never order the wrong spare.' },
+        { icon: 'bi-shield-check', title: 'Warranty Backed', text: 'Applicable parts come with a manufacturer warranty - the exact period is shown on each product page.' },
+        { icon: 'bi-arrow-repeat', title: 'Easy Returns', text: 'Wrong fitment or damaged in transit? Reach out to support within 7 days for a replacement.' },
+        { icon: 'bi-headset', title: 'Expert Support', text: 'Not sure which part you need? Our team can help you identify the right spare for your bike or car.' }
+    ];
+
+    // ---------- Inline placeholder (no external image dependency) ----------
+    // Used whenever a product/category has no photo uploaded yet - a clean, on-brand
+    // placeholder instead of a broken image or a third-party placeholder service.
+    function placeholderDataUri(iconGlyph, label) {
+        const safeLabel = escapeXml(label || 'DriveNest');
+        const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+                <rect width="300" height="300" fill="#f1f3fb"/>
+                <circle cx="150" cy="118" r="46" fill="#e2e6f5"/>
+                <text x="150" y="132" font-size="46" text-anchor="middle" fill="#8891c2" font-family="Arial, sans-serif">${iconGlyph}</text>
+                <text x="150" y="210" font-size="15" text-anchor="middle" fill="#9096b8" font-family="Arial, sans-serif">${safeLabel}</text>
+                <text x="150" y="232" font-size="12" text-anchor="middle" fill="#b3b8d4" font-family="Arial, sans-serif">Photo coming soon</text>
+            </svg>`;
+        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+    function escapeXml(str) {
+        return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function productPlaceholder(name) { return placeholderDataUri('\u2699', name); }
+    function categoryIcon(vehicleType) { return vehicleType === 'car' ? 'bi-car-front-fill' : 'bi-bicycle'; }
+
+    // ---------- Helpers ----------
+    function getToken() { return localStorage.getItem('token'); }
+    function setToken(token) { localStorage.setItem('token', token); }
+    function removeToken() { localStorage.removeItem('token'); }
+    function isAdmin() { return currentUser && currentUser.role === 'admin'; }
+    function escapeHtml(str) {
+        return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function toast(message, type = 'success') {
+        const container = document.querySelector('.toast-container');
+        const toastEl = document.createElement('div');
+        toastEl.className = `toast align-items-center text-white bg-${type} border-0 show`;
+        toastEl.setAttribute('role', 'alert');
+        toastEl.innerHTML = `<div class="d-flex"><div class="toast-body">${escapeHtml(message)}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`;
+        container.appendChild(toastEl);
+        setTimeout(() => toastEl.remove(), 4000);
+    }
+
+    function renderMain(html) {
+        document.getElementById('mainContent').innerHTML = html;
+    }
+
+    function updateCartBadge() {
+        const count = (currentCart.items || []).reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById('cartCount').textContent = count;
+    }
+
+    // ---------- API Calls ----------
+    async function apiCall(endpoint, method = 'GET', body = null, requireAuth = false) {
+        const headers = { 'Content-Type': 'application/json' };
+        if (requireAuth) {
+            const token = getToken();
+            if (!token) throw new Error('Not authenticated');
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        const options = { method, headers };
+        if (body) options.body = JSON.stringify(body);
+        const res = await fetch(`${API_BASE}${endpoint}`, options);
+        if (!res.ok) {
+            let error = { message: 'Request failed' };
+            try { error = await res.json(); } catch {}
+            const err = new Error(error.message || 'Request failed');
+            err.status = res.status;
+            throw err;
+        }
+        return res.json();
+    }
+
+    // ---------- Session bootstrap ----------
+    async function restoreSession() {
+        if (!getToken()) return;
+        try {
+            const data = await apiCall('/auth/me', 'GET', null, true);
+            currentUser = data.user;
+            await fetchCart();
+        } catch (err) {
+            removeToken();
+            currentUser = null;
+        }
+        updateUI();
+    }
+
+    // ---------- Auth ----------
+    async function login(email, password) {
+        try {
+            const data = await apiCall('/auth/login', 'POST', { email, password });
+            setToken(data.token);
+            currentUser = data.user;
+            updateUI();
+            await fetchCart();
+            toast('Logged in successfully');
+            showHome();
+        } catch (err) {
+            toast(err.message, 'danger');
+        }
+    }
+
+    async function register(name, email, password, phone) {
+        try {
+            const data = await apiCall('/auth/register', 'POST', { name, email, password, phone });
+            setToken(data.token);
+            currentUser = data.user;
+            updateUI();
+            await fetchCart();
+            toast('Registration successful');
+            showHome();
+        } catch (err) {
+            toast(err.message, 'danger');
+        }
+    }
+
+    function logout() {
+        removeToken();
+        currentUser = null;
+        currentCart = { items: [], total: 0 };
+        updateUI();
+        toast('Logged out');
+        showHome();
+    }
+
+    // ---------- Cart ----------
+    async function fetchCart() {
+        if (!getToken()) return;
+        try {
+            const data = await apiCall('/cart', 'GET', null, true);
+            currentCart = data;
+            updateCartBadge();
+        } catch (err) {
+            if (err.status === 401) { removeToken(); currentUser = null; updateUI(); }
+        }
+    }
+
+    async function addToCart(productId, quantity = 1) {
+        if (!getToken()) { toast('Please login first', 'warning'); showLogin(); return; }
+        try {
+            const data = await apiCall('/cart/add', 'POST', { productId, quantity }, true);
+            currentCart = data;
+            updateCartBadge();
+            toast('Added to cart');
+        } catch (err) {
+            toast(err.message, 'danger');
+        }
+    }
+
+    async function updateCartItem(productId, quantity) {
+        try {
+            const data = await apiCall('/cart/update', 'PUT', { productId, quantity }, true);
+            currentCart = data;
+            updateCartBadge();
+            renderCart();
+        } catch (err) {
+            toast(err.message, 'danger');
+        }
+    }
+
+    async function removeCartItem(productId) {
+        try {
+            const data = await apiCall(`/cart/remove/${productId}`, 'DELETE', null, true);
+            currentCart = data;
+            updateCartBadge();
+            renderCart();
+        } catch (err) {
+            toast(err.message, 'danger');
+        }
+    }
+
+    async function clearCart() {
+        try {
+            await apiCall('/cart/clear', 'DELETE', null, true);
+            currentCart = { items: [], total: 0 };
+            updateCartBadge();
+            renderCart();
+        } catch (err) {
+            toast(err.message, 'danger');
+        }
+    }
+
+    // ---------- Orders ----------
+    async function placeOrder(address) {
+        try {
+            await apiCall('/orders/create', 'POST', { address }, true);
+            toast('Order placed successfully!');
+            currentCart = { items: [], total: 0 };
+            updateCartBadge();
+            showMyOrders();
+        } catch (err) {
+            toast(err.message, 'danger');
+        }
+    }
+
+    async function fetchMyOrders() {
+        try {
+            return await apiCall('/orders/my-orders', 'GET', null, true);
+        } catch (err) {
+            toast(err.message, 'danger');
+            return [];
+        }
+    }
+
+    // ---------- Products & Categories ----------
+    async function fetchCategories(vt) {
+        try {
+            const qs = (vt && vt !== 'all') ? `?vehicle_type=${vt}` : '';
+            return await apiCall(`/categories${qs}`);
+        } catch { return []; }
+    }
+
+    async function fetchProducts(categoryId = null, search = '') {
+        let url = '/products';
+        const params = new URLSearchParams();
+        if (categoryId) params.append('category', categoryId);
+        if (search) params.append('search', search);
+        if (params.toString()) url += '?' + params.toString();
+        try { return await apiCall(url); } catch { return []; }
+    }
+
+    // ---------- UI updates ----------
+    async function refreshNav() {
+        const authButtons = document.getElementById('authButtons');
+        const userDropdown = document.getElementById('userDropdown');
+        const adminLink = document.getElementById('adminDashboardLink');
+        if (currentUser) {
+            authButtons.style.display = 'none';
+            userDropdown.style.display = 'block';
+            document.getElementById('userName').textContent = currentUser.name;
+            adminLink.style.display = isAdmin() ? 'block' : 'none';
+        } else {
+            authButtons.style.display = 'flex';
+            userDropdown.style.display = 'none';
+        }
+        const categories = await fetchCategories('all');
+        const nav = document.getElementById('categoryNav');
+        nav.innerHTML = categories.map(c => `<li class="nav-item"><a class="nav-link" href="#" data-cat-id="${c.id}">${escapeHtml(c.name)}</a></li>`).join('');
+        nav.querySelectorAll('a[data-cat-id]').forEach(a => {
+            a.addEventListener('click', (e) => { e.preventDefault(); showCategory(a.dataset.catId); });
+        });
+    }
+    function updateUI() { refreshNav(); }
+
+    // ---------- Sections ----------
+    function heroSection() {
+        return `
+            <div class="hero mb-4">
+                <div class="container text-center">
+                    <h1>Genuine Spare Parts for Every Bike & Car</h1>
+                    <p class="lead mb-4">Find the exact fitment part for your model - brake pads, filters, batteries, and more - delivered to your door.</p>
+                    <div class="d-flex justify-content-center mb-4">
+                        <div class="vtype-tabs">
+                            <button data-vt="all" class="${vehicleFilter === 'all' ? 'active' : ''}"><i class="bi bi-grid me-1"></i>All</button>
+                            <button data-vt="bike" class="${vehicleFilter === 'bike' ? 'active' : ''}"><i class="bi bi-bicycle me-1"></i>Bikes</button>
+                            <button data-vt="car" class="${vehicleFilter === 'car' ? 'active' : ''}"><i class="bi bi-car-front-fill me-1"></i>Cars</button>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center g-3">
+                        <div class="col-4 col-md-2"><div class="hero-stat"><div class="num">11+</div><div class="label">Brands</div></div></div>
+                        <div class="col-4 col-md-2"><div class="hero-stat"><div class="num">30+</div><div class="label">Spare Parts</div></div></div>
+                        <div class="col-4 col-md-2"><div class="hero-stat"><div class="num">7 Day</div><div class="label">Returns</div></div></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function servicesSection() {
+        return `
+            <div class="my-5">
+                <h3 class="section-title text-center mb-1">Why Choose DriveNest</h3>
+                <p class="section-sub text-center mb-4">Everything you need for reliable, hassle-free spare parts shopping.</p>
+                <div class="row g-3">
+                    ${SERVICES.map(s => `
+                        <div class="col-md-4">
+                            <div class="service-card">
+                                <i class="bi ${s.icon}"></i>
+                                <h6>${escapeHtml(s.title)}</h6>
+                                <p>${escapeHtml(s.text)}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    function bindHeroEvents() {
+        document.querySelectorAll('.vtype-tabs button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                vehicleFilter = btn.dataset.vt;
+                showHome();
+            });
+        });
+    }
+
+    // ---------- Pages ----------
+    async function showHome() {
+        renderMain(heroSection() + `<div class="spinner-wrap"><div class="spinner-border text-danger" role="status"></div></div>`);
+        bindHeroEvents();
+        const [categories, products] = await Promise.all([
+            fetchCategories(vehicleFilter),
+            fetchProducts()
+        ]);
+        // If filtering by vehicle type, only show products belonging to those categories
+        const catIds = new Set(categories.map(c => c.id));
+        const filteredProducts = vehicleFilter === 'all' ? products : products.filter(p => catIds.has(p.category_id));
+
+        const html = heroSection() + `
+            <div class="mb-4">
+                <h3 class="section-title mb-1">Browse by Brand</h3>
+                <p class="section-sub mb-3">${vehicleFilter === 'all' ? 'Bikes and cars' : (vehicleFilter === 'bike' ? 'Two-wheeler brands' : 'Four-wheeler brands')}</p>
+                <div class="row row-cols-2 row-cols-md-4 g-3">
+                    ${categories.length ? categories.map(c => `
+                        <div class="col">
+                            <div class="card category-card h-100 text-center position-relative" data-cat-id="${c.id}">
+                                <span class="vtype-badge ${c.vehicle_type}">${c.vehicle_type}</span>
+                                <div class="category-thumb">
+                                    ${c.image ? `<img src="${c.image}" style="max-height:100%;max-width:100%;object-fit:cover;" alt="${escapeHtml(c.name)}">` : `<i class="bi ${categoryIcon(c.vehicle_type)}"></i>`}
+                                </div>
+                                <div class="card-body py-2">
+                                    <h6 class="card-title mb-0">${escapeHtml(c.name)}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('') : '<p class="text-muted">No brands found for this vehicle type yet.</p>'}
+                </div>
+            </div>
+            <h3 class="section-title mb-3">Featured Spare Parts</h3>
+            <div class="row" id="productGrid">
+                ${filteredProducts.length ? filteredProducts.map(p => productCard(p)).join('') : '<p class="text-muted">No products yet. Ask an admin to run the seed route to populate demo data.</p>'}
+            </div>
+            ${servicesSection()}
+        `;
+        renderMain(html);
+        bindHeroEvents();
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', () => showCategory(card.dataset.catId));
+        });
+        attachProductEvents();
+    }
+
+    async function showCategory(categoryId) {
+        renderMain(`<div class="spinner-wrap"><div class="spinner-border text-danger" role="status"></div></div>`);
+        const [products, categories] = await Promise.all([fetchProducts(categoryId), fetchCategories('all')]);
+        const cat = categories.find(c => String(c.id) === String(categoryId));
+        const html = `
+            <div class="d-flex justify-content-between align-items-center mb-2 mt-4">
+                <div>
+                    <h3 class="mb-0">${cat ? escapeHtml(cat.name) : 'Products'} <span class="badge bg-light text-dark border">${cat ? cat.vehicle_type : ''}</span></h3>
+                    ${cat && cat.description ? `<p class="text-muted mb-0">${escapeHtml(cat.description)}</p>` : ''}
+                </div>
+                <button class="btn btn-outline-secondary btn-sm" id="backHomeBtn"><i class="bi bi-arrow-left"></i> Back</button>
+            </div>
+            <hr>
+            <div class="row">${products.length ? products.map(p => productCard(p)).join('') : `<div class="col-12"><p class="text-muted">No spare parts listed for ${cat ? escapeHtml(cat.name) : 'this brand'} yet. Check back soon, or contact support if you were expecting to see products here.</p></div>`}</div>
+        `;
+        renderMain(html);
+        document.getElementById('backHomeBtn').addEventListener('click', showHome);
+        attachProductEvents();
+    }
+
+    async function showProductDetail(slug) {
+        try {
+            const product = await apiCall(`/products/${slug}`);
+            const body = document.getElementById('productModalBody');
+            const img = (product.images && product.images.length) ? product.images[0] : productPlaceholder(product.name);
+            body.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6 d-flex align-items-center justify-content-center" style="background:#fbfbfd;border-radius:8px;">
+                        <img src="${img}" class="img-fluid p-3" alt="${escapeHtml(product.name)}">
+                    </div>
+                    <div class="col-md-6">
+                        <h4>${escapeHtml(product.name)}</h4>
+                        <p class="text-muted mb-1">${escapeHtml(product.brand || '')} &middot; ${escapeHtml(product.category_name || '')}</p>
+                        <div class="mb-2">
+                            <span class="price">₹${product.price}</span>
+                            ${product.compare_at_price ? `<span class="compare-price">₹${product.compare_at_price}</span>` : ''}
+                        </div>
+                        <p>${escapeHtml(product.description || '')}</p>
+                        ${product.compatible_models ? `<p class="fitment-line"><i class="bi bi-check-circle-fill"></i> Fits: ${escapeHtml(product.compatible_models)}</p>` : ''}
+                        ${product.warranty_months ? `<p class="fitment-line"><i class="bi bi-shield-check"></i> ${product.warranty_months}-month warranty</p>` : ''}
+                        <p><strong>Stock:</strong> ${product.stock > 0 ? `${product.stock} available` : 'Out of stock'}</p>
+                        <button class="btn btn-primary" id="modalAddToCart" ${product.stock < 1 ? 'disabled' : ''}><i class="bi bi-cart-plus"></i> Add to Cart</button>
+                    </div>
+                </div>
+            `;
+            modal.show();
+            document.getElementById('modalAddToCart').addEventListener('click', () => {
+                addToCart(product.id);
+                modal.hide();
+            });
+        } catch (err) {
+            toast('Product not found', 'danger');
+        }
+    }
+
+    function productCard(p) {
+        const img = (p.images && p.images.length) ? p.images[0] : productPlaceholder(p.name);
+        const sale = p.compare_at_price && Number(p.compare_at_price) > Number(p.price);
+        return `
+            <div class="col-md-4 col-lg-3">
+                <div class="card product-card h-100 position-relative">
+                    ${sale ? '<span class="sale-badge">SALE</span>' : ''}
+                    ${p.product_type === 'accessory' ? '<span class="accessory-badge">Accessory</span>' : ''}
+                    <div class="product-image-wrap">
+                        <img src="${img}" class="product-image" alt="${escapeHtml(p.name)}">
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title"><a href="#" class="text-decoration-none text-dark product-detail" data-slug="${p.slug}">${escapeHtml(p.name)}</a></h6>
+                        <p class="text-muted small mb-1">${escapeHtml(p.brand || '')}</p>
+                        ${p.compatible_models ? `<p class="fitment-line mb-2"><i class="bi bi-check-circle-fill"></i> ${escapeHtml(p.compatible_models)}</p>` : ''}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="price">₹${p.price}</span>
+                                ${sale ? `<span class="compare-price">₹${p.compare_at_price}</span>` : ''}
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary add-to-cart" data-product-id="${p.id}" ${p.stock < 1 ? 'disabled' : ''}><i class="bi bi-cart-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function attachProductEvents() {
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', (e) => { e.preventDefault(); addToCart(btn.dataset.productId); });
+        });
+        document.querySelectorAll('.product-detail').forEach(link => {
+            link.addEventListener('click', (e) => { e.preventDefault(); showProductDetail(link.dataset.slug); });
+        });
+    }
+
+    function renderCart() {
+        const items = currentCart.items || [];
+        let html = `
+            <h3 class="mt-4">Shopping Cart</h3>
+            ${items.length === 0 ? '<p>Your cart is empty.</p>' : `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead><tr><th>Product</th><th>Price</th><th>Quantity</th><th>Total</th><th></th></tr></thead>
+                        <tbody>
+                            ${items.map(item => `
+                                <tr>
+                                    <td><img src="${(item.images && item.images.length) ? item.images[0] : productPlaceholder(item.name)}" style="width:50px;height:50px;object-fit:contain;"> ${escapeHtml(item.name)}</td>
+                                    <td>₹${item.price}</td>
+                                    <td>
+                                        <div class="input-group input-group-sm" style="width:120px;">
+                                            <button class="btn btn-outline-secondary btn-qty" data-product="${item.product_id}" data-change="-1">-</button>
+                                            <input type="text" class="form-control text-center" value="${item.quantity}" readonly>
+                                            <button class="btn btn-outline-secondary btn-qty" data-product="${item.product_id}" data-change="1">+</button>
+                                        </div>
+                                    </td>
+                                    <td>₹${(item.price * item.quantity).toFixed(2)}</td>
+                                    <td><button class="btn btn-danger btn-sm btn-remove" data-product="${item.product_id}"><i class="bi bi-trash"></i></button></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                        <tfoot>
+                            <tr><td colspan="3" class="text-end"><strong>Total:</strong></td><td colspan="2"><strong>₹${currentCart.total || 0}</strong></td></tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-success" id="checkoutBtn">Proceed to Checkout</button>
+                    <button class="btn btn-outline-danger" id="clearCartBtn">Clear Cart</button>
+                </div>
+            `}
+        `;
+        renderMain(html);
+        document.querySelectorAll('.btn-qty').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const pid = btn.dataset.product;
+                const change = parseInt(btn.dataset.change);
+                const item = currentCart.items.find(i => i.product_id == pid);
+                if (item) {
+                    const newQty = item.quantity + change;
+                    if (newQty < 1) return;
+                    updateCartItem(pid, newQty);
+                }
+            });
+        });
+        document.querySelectorAll('.btn-remove').forEach(btn => {
+            btn.addEventListener('click', () => removeCartItem(btn.dataset.product));
+        });
+        document.getElementById('clearCartBtn')?.addEventListener('click', clearCart);
+        document.getElementById('checkoutBtn')?.addEventListener('click', showCheckout);
+    }
+
+    function showCheckout() {
+        if (!currentCart.items || currentCart.items.length === 0) {
+            toast('Cart is empty', 'warning');
+            showHome();
+            return;
+        }
+        const html = `
+            <h3 class="mt-4">Checkout</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <form id="checkoutForm">
+                        <div class="mb-3"><label class="form-label">Street</label><input type="text" class="form-control" id="street" required></div>
+                        <div class="mb-3"><label class="form-label">City</label><input type="text" class="form-control" id="city" required></div>
+                        <div class="mb-3"><label class="form-label">State</label><input type="text" class="form-control" id="state" required></div>
+                        <div class="mb-3"><label class="form-label">Pincode</label><input type="text" class="form-control" id="pincode" required></div>
+                        <button type="submit" class="btn btn-success">Place Order</button>
+                        <button type="button" class="btn btn-secondary" id="backToCartBtn">Back to Cart</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h5>Order Summary</h5>
+                    <ul class="list-group">
+                        ${currentCart.items.map(item => `
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                ${escapeHtml(item.name)} × ${item.quantity}
+                                <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                            </li>
+                        `).join('')}
+                        <li class="list-group-item d-flex justify-content-between fw-bold">Total<span>₹${currentCart.total}</span></li>
+                    </ul>
+                </div>
+            </div>
+        `;
+        renderMain(html);
+        document.getElementById('backToCartBtn').addEventListener('click', renderCart);
+        document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const address = {
+                street: document.getElementById('street').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                pincode: document.getElementById('pincode').value
+            };
+            await placeOrder(address);
+        });
+    }
+
+    async function showMyOrders() {
+        renderMain(`<div class="spinner-wrap"><div class="spinner-border text-danger" role="status"></div></div>`);
+        const orders = await fetchMyOrders();
+        let html = `<h3 class="mt-4">My Orders</h3>`;
+        if (orders.length === 0) {
+            html += `<p>You have no orders.</p>`;
+        } else {
+            html += `<div class="accordion" id="ordersAccordion">`;
+            orders.forEach((order, idx) => {
+                html += `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#order${idx}">
+                                Order #${order.id} – ${order.status.toUpperCase()} – ₹${order.total} – ${new Date(order.created_at).toLocaleDateString()}
+                            </button>
+                        </h2>
+                        <div id="order${idx}" class="accordion-collapse collapse" data-bs-parent="#ordersAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Address:</strong> ${escapeHtml(order.address_street)}, ${escapeHtml(order.address_city)}, ${escapeHtml(order.address_state)} - ${escapeHtml(order.address_pincode)}</p>
+                                <ul class="list-group">
+                                    ${order.items.map(item => `
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            ${escapeHtml(item.name)} × ${item.quantity}
+                                            <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+        renderMain(html);
+    }
+
+    // ---------- Admin Dashboard ----------
+    async function showAdmin() {
+        if (!isAdmin()) { toast('Access denied', 'danger'); showHome(); return; }
+        const categories = await fetchCategories('all');
+        const catOptions = categories.map(c => `<option value="${c.id}">${escapeHtml(c.name)} (${c.vehicle_type})</option>`).join('');
+
+        renderMain(`
+            <h3 class="mt-4">Admin Dashboard</h3>
+            <ul class="nav nav-tabs" id="adminTabs">
+                <li class="nav-item"><a class="nav-link active" data-tab="products" href="#">Products</a></li>
+                <li class="nav-item"><a class="nav-link" data-tab="categories" href="#">Categories</a></li>
+                <li class="nav-item"><a class="nav-link" data-tab="orders" href="#">Orders</a></li>
+            </ul>
+            <div class="tab-content mt-3">
+                <div id="tab-products" class="tab-pane">
+                    <button class="btn btn-primary btn-sm mb-2" id="addProductBtn">+ Add Product</button>
+                    <div id="productFormHost"></div>
+                    <div id="productList"></div>
+                </div>
+                <div id="tab-categories" class="tab-pane" style="display:none;">
+                    <button class="btn btn-primary btn-sm mb-2" id="addCategoryBtn">+ Add Category</button>
+                    <div id="categoryFormHost"></div>
+                    <div id="categoryList"></div>
+                </div>
+                <div id="tab-orders" class="tab-pane" style="display:none;">
+                    <div id="orderList"></div>
+                </div>
+            </div>
+        `);
+
+        document.querySelectorAll('#adminTabs .nav-link').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('#adminTabs .nav-link').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const target = tab.dataset.tab;
+                document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+                document.getElementById(`tab-${target}`).style.display = 'block';
+                if (target === 'products') loadAdminProducts(catOptions);
+                else if (target === 'categories') loadAdminCategories();
+                else if (target === 'orders') loadAdminOrders();
+            });
+        });
+
+        loadAdminProducts(catOptions);
+        document.getElementById('addProductBtn').addEventListener('click', () => showAddProductForm(catOptions));
+        document.getElementById('addCategoryBtn').addEventListener('click', showAddCategoryForm);
+    }
+
+    async function loadAdminProducts(catOptions) {
+        const products = await fetchProducts();
+        let html = `<table class="table table-striped"><thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Stock</th><th>Fits</th><th>Actions</th></tr></thead><tbody>`;
+        products.forEach(p => {
+            html += `
+                <tr>
+                    <td>${p.id}</td><td>${escapeHtml(p.name)}</td><td>₹${p.price}</td><td>${p.stock}</td>
+                    <td class="small text-muted">${escapeHtml(p.compatible_models || '-')}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning edit-product" data-id="${p.id}">Edit</button>
+                        <button class="btn btn-sm btn-danger delete-product" data-id="${p.id}">Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
+        html += `</tbody></table>`;
+        document.getElementById('productList').innerHTML = html;
+        document.querySelectorAll('.delete-product').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (confirm('Delete this product?')) {
+                    try {
+                        await apiCall(`/admin/products/${btn.dataset.id}`, 'DELETE', null, true);
+                        toast('Product deleted');
+                        loadAdminProducts(catOptions);
+                    } catch (err) { toast(err.message, 'danger'); }
+                }
+            });
+        });
+        document.querySelectorAll('.edit-product').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const product = products.find(p => p.id == btn.dataset.id);
+                if (product) showEditProductForm(product, catOptions);
+            });
+        });
+    }
+
+    function showAddProductForm(catOptions) {
+        const host = document.getElementById('productFormHost');
+        host.innerHTML = `
+            <div class="card p-3 mb-3">
+                <h5>Add Product</h5>
+                <form id="adminProductForm">
+                    <div class="row g-2">
+                        <div class="col-md-6"><input class="form-control" placeholder="Name" name="name" required></div>
+                        <div class="col-md-6"><input class="form-control" placeholder="Slug" name="slug" required></div>
+                        <div class="col-md-12"><textarea class="form-control" placeholder="Description" name="description"></textarea></div>
+                        <div class="col-md-4"><input class="form-control" type="number" step="0.01" placeholder="Price" name="price" required></div>
+                        <div class="col-md-4"><input class="form-control" type="number" step="0.01" placeholder="Compare at Price" name="compare_at_price"></div>
+                        <div class="col-md-4"><input class="form-control" placeholder="Brand" name="brand"></div>
+                        <div class="col-md-6">
+                            <select class="form-select" name="category_id" required>
+                                <option value="">Select Category</option>${catOptions}
+                            </select>
+                        </div>
+                        <div class="col-md-6"><input class="form-control" placeholder='Image URL (leave blank if none)' name="imageUrl"></div>
+                        <div class="col-md-4"><input class="form-control" type="number" placeholder="Stock" name="stock"></div>
+                        <div class="col-md-4"><input class="form-control" placeholder="SKU" name="sku"></div>
+                        <div class="col-md-4"><input class="form-control" type="number" placeholder="Warranty (months)" name="warranty_months"></div>
+                        <div class="col-md-8"><input class="form-control" placeholder="Compatible Models (e.g. Classic 350, Meteor 350)" name="compatible_models"></div>
+                        <div class="col-md-4">
+                            <select class="form-select" name="product_type">
+                                <option value="part">Spare Part</option>
+                                <option value="accessory">Accessory</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12"><button type="submit" class="btn btn-primary">Create</button></div>
+                    </div>
+                </form>
+            </div>
+        `;
+        document.getElementById('adminProductForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            data.images = data.imageUrl ? [data.imageUrl] : undefined;
+            delete data.imageUrl;
+            try {
+                await apiCall('/admin/products', 'POST', data, true);
+                toast('Product created');
+                host.innerHTML = '';
+                loadAdminProducts(catOptions);
+            } catch (err) { toast(err.message, 'danger'); }
+        });
+    }
+
+    function showEditProductForm(product, catOptions) {
+        const host = document.getElementById('productFormHost');
+        const existingImg = (product.images && product.images.length) ? product.images[0] : '';
+        host.innerHTML = `
+            <div class="card p-3 mb-3">
+                <h5>Edit Product #${product.id}</h5>
+                <form id="adminProductEditForm">
+                    <div class="row g-2">
+                        <div class="col-md-6"><input class="form-control" placeholder="Name" name="name" value="${escapeHtml(product.name)}" required></div>
+                        <div class="col-md-6"><input class="form-control" placeholder="Slug" name="slug" value="${escapeHtml(product.slug)}" required></div>
+                        <div class="col-md-12"><textarea class="form-control" placeholder="Description" name="description">${escapeHtml(product.description || '')}</textarea></div>
+                        <div class="col-md-4"><input class="form-control" type="number" step="0.01" placeholder="Price" name="price" value="${product.price}" required></div>
+                        <div class="col-md-4"><input class="form-control" type="number" step="0.01" placeholder="Compare at Price" name="compare_at_price" value="${product.compare_at_price || ''}"></div>
+                        <div class="col-md-4"><input class="form-control" placeholder="Brand" name="brand" value="${escapeHtml(product.brand || '')}"></div>
+                        <div class="col-md-6">
+                            <select class="form-select" name="category_id" required>${catOptions}</select>
+                        </div>
+                        <div class="col-md-6"><input class="form-control" placeholder="Image URL (leave blank if none)" name="imageUrl" value="${escapeHtml(existingImg)}"></div>
+                        <div class="col-md-4"><input class="form-control" type="number" placeholder="Stock" name="stock" value="${product.stock}"></div>
+                        <div class="col-md-4"><input class="form-control" placeholder="SKU" name="sku" value="${escapeHtml(product.sku || '')}"></div>
+                        <div class="col-md-4"><input class="form-control" type="number" placeholder="Warranty (months)" name="warranty_months" value="${product.warranty_months || ''}"></div>
+                        <div class="col-md-6"><input class="form-control" placeholder="Compatible Models" name="compatible_models" value="${escapeHtml(product.compatible_models || '')}"></div>
+                        <div class="col-md-3">
+                            <select class="form-select" name="product_type">
+                                <option value="part" ${product.product_type !== 'accessory' ? 'selected' : ''}>Spare Part</option>
+                                <option value="accessory" ${product.product_type === 'accessory' ? 'selected' : ''}>Accessory</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" name="is_active">
+                                <option value="1" ${product.is_active ? 'selected' : ''}>Active</option>
+                                <option value="0" ${!product.is_active ? 'selected' : ''}>Inactive</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12"><button type="submit" class="btn btn-primary">Update</button></div>
+                    </div>
+                </form>
+            </div>
+        `;
+        const sel = host.querySelector('[name="category_id"]');
+        if (sel) sel.value = product.category_id;
+        document.getElementById('adminProductEditForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            data.images = data.imageUrl ? [data.imageUrl] : [];
+            delete data.imageUrl;
+            try {
+                await apiCall(`/admin/products/${product.id}`, 'PUT', data, true);
+                toast('Product updated');
+                host.innerHTML = '';
+                loadAdminProducts(catOptions);
+            } catch (err) { toast(err.message, 'danger'); }
+        });
+    }
+
+    async function loadAdminCategories() {
+        const cats = await fetchCategories('all');
+        let html = `<table class="table"><thead><tr><th>ID</th><th>Name</th><th>Slug</th><th>Type</th><th>Actions</th></tr></thead><tbody>`;
+        cats.forEach(c => {
+            html += `
+                <tr>
+                    <td>${c.id}</td><td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.slug)}</td><td>${c.vehicle_type}</td>
+                    <td><button class="btn btn-sm btn-danger delete-category" data-id="${c.id}">Delete</button></td>
+                </tr>
+            `;
+        });
+        html += `</tbody></table>`;
+        document.getElementById('categoryList').innerHTML = html;
+        document.querySelectorAll('.delete-category').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (confirm('Delete this category?')) {
+                    try {
+                        await apiCall(`/admin/categories/${btn.dataset.id}`, 'DELETE', null, true);
+                        toast('Category deleted');
+                        loadAdminCategories();
+                    } catch (err) { toast(err.message, 'danger'); }
+                }
+            });
+        });
+    }
+
+    function showAddCategoryForm() {
+        const host = document.getElementById('categoryFormHost');
+        host.innerHTML = `
+            <div class="card p-3 mb-3">
+                <h5>Add Category</h5>
+                <form id="adminCategoryForm">
+                    <div class="row g-2">
+                        <div class="col-md-6"><input class="form-control" placeholder="Name" name="name" required></div>
+                        <div class="col-md-6"><input class="form-control" placeholder="Slug" name="slug" required></div>
+                        <div class="col-md-12"><textarea class="form-control" placeholder="Description" name="description"></textarea></div>
+                        <div class="col-md-8"><input class="form-control" placeholder="Image URL (leave blank if none)" name="image"></div>
+                        <div class="col-md-4">
+                            <select class="form-select" name="vehicle_type">
+                                <option value="bike">Bike</option>
+                                <option value="car">Car</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12"><button type="submit" class="btn btn-primary">Create</button></div>
+                    </div>
+                </form>
+            </div>
+        `;
+        document.getElementById('adminCategoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            try {
+                await apiCall('/admin/categories', 'POST', data, true);
+                toast('Category created');
+                host.innerHTML = '';
+                loadAdminCategories();
+                refreshNav();
+            } catch (err) { toast(err.message, 'danger'); }
+        });
+    }
+
+    async function loadAdminOrders() {
+        try {
+            const orders = await apiCall('/admin/orders', 'GET', null, true);
+            let html = `<table class="table"><thead><tr><th>ID</th><th>User</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>`;
+            orders.forEach(o => {
+                html += `
+                    <tr>
+                        <td>${o.id}</td>
+                        <td>${escapeHtml(o.user_name)} (${escapeHtml(o.user_email)})</td>
+                        <td>₹${o.total}</td>
+                        <td>
+                            <select class="form-select form-select-sm order-status" data-id="${o.id}">
+                                <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="confirmed" ${o.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                                <option value="shipped" ${o.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                                <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                            </select>
+                        </td>
+                        <td><button class="btn btn-sm btn-outline-primary view-order-items" data-id="${o.id}">Items</button></td>
+                    </tr>
+                `;
+            });
+            html += `</tbody></table>`;
+            document.getElementById('orderList').innerHTML = html;
+            document.querySelectorAll('.order-status').forEach(sel => {
+                sel.addEventListener('change', async () => {
+                    try {
+                        await apiCall(`/admin/orders/${sel.dataset.id}`, 'PUT', { status: sel.value }, true);
+                        toast('Order status updated');
+                    } catch (err) { toast(err.message, 'danger'); }
+                });
+            });
+            document.querySelectorAll('.view-order-items').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const order = orders.find(o => o.id == btn.dataset.id);
+                    if (order && order.items) {
+                        const msg = order.items.map(i => `${i.name} × ${i.quantity} = ₹${(i.price * i.quantity).toFixed(2)}`).join('\n');
+                        alert(`Order #${order.id} Items:\n${msg}`);
+                    }
+                });
+            });
+        } catch (err) {
+            toast(err.message, 'danger');
+        }
+    }
+
+    // ---------- Auth UI ----------
+    function showLogin() {
+        renderMain(`
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-4">
+                    <h3>Login</h3>
+                    <form id="loginForm">
+                        <div class="mb-3"><input class="form-control" type="email" placeholder="Email" id="loginEmail" required></div>
+                        <div class="mb-3"><input class="form-control" type="password" placeholder="Password" id="loginPassword" required></div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+                    <p class="mt-2">Don't have an account? <a href="#" id="goRegister">Register</a></p>
+                </div>
+            </div>
+        `);
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+        });
+        document.getElementById('goRegister').addEventListener('click', (e) => { e.preventDefault(); showRegister(); });
+    }
+
+    function showRegister() {
+        renderMain(`
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-4">
+                    <h3>Register</h3>
+                    <form id="registerForm">
+                        <div class="mb-3"><input class="form-control" placeholder="Name" id="regName" required></div>
+                        <div class="mb-3"><input class="form-control" type="email" placeholder="Email" id="regEmail" required></div>
+                        <div class="mb-3"><input class="form-control" type="password" placeholder="Password (min 6)" id="regPassword" required minlength="6"></div>
+                        <div class="mb-3"><input class="form-control" placeholder="Phone (optional)" id="regPhone"></div>
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+                    <p class="mt-2">Already have an account? <a href="#" id="goLogin">Login</a></p>
+                </div>
+            </div>
+        `);
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            register(
+                document.getElementById('regName').value,
+                document.getElementById('regEmail').value,
+                document.getElementById('regPassword').value,
+                document.getElementById('regPhone').value
+            );
+        });
+        document.getElementById('goLogin').addEventListener('click', (e) => { e.preventDefault(); showLogin(); });
+    }
+
+    // ---------- Footer ----------
+    function renderFooter() {
+        const footer = document.createElement('footer');
+        footer.className = 'site-footer';
+        footer.innerHTML = `
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <h6><i class="bi bi-car-front-fill"></i> DriveNest</h6>
+                        <p class="small">Your one-stop shop for genuine bike and car spare parts - brakes, filters, batteries, electricals and more, with fitment guidance for every listing.</p>
+                    </div>
+                    <div class="col-md-2">
+                        <h6>Shop</h6>
+                        <p class="small mb-1"><a href="#" id="footerBikes">Bike Parts</a></p>
+                        <p class="small mb-1"><a href="#" id="footerCars">Car Parts</a></p>
+                        <p class="small mb-1"><a href="#" id="footerOrders">My Orders</a></p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6>Customer Care</h6>
+                        <p class="small mb-1"><i class="bi bi-telephone"></i> +91 98765 43210</p>
+                        <p class="small mb-1"><i class="bi bi-envelope"></i> support@drivenest.example</p>
+                        <p class="small mb-1"><i class="bi bi-clock"></i> Mon-Sat, 9am-7pm IST</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6>Our Promise</h6>
+                        <p class="small mb-1"><i class="bi bi-patch-check"></i> Genuine parts only</p>
+                        <p class="small mb-1"><i class="bi bi-truck"></i> Pan-India delivery</p>
+                        <p class="small mb-1"><i class="bi bi-arrow-repeat"></i> 7-day easy returns</p>
+                    </div>
+                </div>
+                <div class="bottom-bar text-center">
+                    &copy; ${new Date().getFullYear()} DriveNest. All rights reserved. Demo storefront - no real payments are processed.
+                </div>
+            </div>
+        `;
+        document.body.appendChild(footer);
+        document.getElementById('footerBikes').addEventListener('click', (e) => { e.preventDefault(); vehicleFilter = 'bike'; showHome(); });
+        document.getElementById('footerCars').addEventListener('click', (e) => { e.preventDefault(); vehicleFilter = 'car'; showHome(); });
+        document.getElementById('footerOrders').addEventListener('click', (e) => { e.preventDefault(); getToken() ? showMyOrders() : showLogin(); });
+    }
+
+    // ---------- Navigation bindings ----------
+    document.addEventListener('DOMContentLoaded', async () => {
+        renderFooter();
+        document.getElementById('homeLink').addEventListener('click', (e) => { e.preventDefault(); vehicleFilter = 'all'; showHome(); });
+        document.getElementById('cartLink').addEventListener('click', (e) => { e.preventDefault(); renderCart(); });
+        document.getElementById('loginLink').addEventListener('click', (e) => { e.preventDefault(); showLogin(); });
+        document.getElementById('registerLink').addEventListener('click', (e) => { e.preventDefault(); showRegister(); });
+        document.getElementById('logoutLink').addEventListener('click', (e) => { e.preventDefault(); logout(); });
+        document.getElementById('myOrdersLink').addEventListener('click', (e) => { e.preventDefault(); showMyOrders(); });
+        document.getElementById('adminDashboardLink').addEventListener('click', (e) => { e.preventDefault(); showAdmin(); });
+
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) { showHome(); return; }
+            const products = await fetchProducts(null, query);
+            renderMain(`
+                <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+                    <h3>Search Results for "${escapeHtml(query)}"</h3>
+                    <button class="btn btn-outline-secondary btn-sm" id="backHomeBtn2"><i class="bi bi-arrow-left"></i> Back</button>
+                </div>
+                <div class="row">${products.length ? products.map(p => productCard(p)).join('') : '<p class="text-muted">No products found.</p>'}</div>
+            `);
+            document.getElementById('backHomeBtn2').addEventListener('click', showHome);
+            attachProductEvents();
+        });
+
+        await restoreSession();
+        showHome();
+    });
+</script>
+</body>
+</html>
