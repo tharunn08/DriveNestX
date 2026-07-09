@@ -29,8 +29,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_change_me';
 // deploy/restart. To keep your data, attach a persistent disk and set
 // DB_PATH to a file inside it (e.g. DB_PATH=/data/drivenest.db on Render).
 // Without that, the app still works, but data resets on each redeploy.
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'drivenest.db');
-fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'drivenest.db');
+if (!process.env.DB_PATH) {
+    fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+}
 
 const db = new Database(DB_PATH);
 db.pragma('foreign_keys = ON');
